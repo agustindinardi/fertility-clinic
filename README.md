@@ -14,43 +14,43 @@ Sistema de gestión para clínica de fertilidad desarrollado con Django.
 ## Instalación
 
 1. **Clonar el repositorio**
-\`\`\`bash
+```
 git clone <repository-url>
 cd fertility-clinic-django
-\`\`\`
+```
 
 2. **Crear entorno virtual**
-\`\`\`bash
+```
 python -m venv venv
 source venv/bin/activate  # En Windows: venv\Scripts\activate
-\`\`\`
+```
 
 3. **Instalar dependencias**
-\`\`\`bash
+```
 pip install -r requirements.txt
-\`\`\`
+```
 
 4. **Configurar variables de entorno**
-\`\`\`bash
+```
 cp .env.example .env
 # Editar .env con tus configuraciones
-\`\`\`
+```
 
 5. **Ejecutar migraciones**
-\`\`\`bash
+```
 python manage.py makemigrations
 python manage.py migrate
-\`\`\`
+```
 
 6. **Poblar base de datos con datos de prueba**
-\`\`\`bash
+```
 python seed_database.py
-\`\`\`
+```
 
 7. **Ejecutar servidor de desarrollo**
-\`\`\`bash
+```
 python manage.py runserver
-\`\`\`
+```
 
 ## Usuarios de Prueba
 
@@ -64,7 +64,7 @@ Después de ejecutar `seed_data`, tendrás los siguientes usuarios:
 
 ## Estructura del Proyecto
 
-\`\`\`
+```
 fertility_clinic/
 ├── core/                 # App principal (dashboard, vistas comunes)
 ├── users/                # Gestión de usuarios y autenticación
@@ -74,7 +74,7 @@ fertility_clinic/
 ├── templates/            # Templates HTML
 ├── static/               # Archivos estáticos (CSS, JS, imágenes)
 └── media/                # Archivos subidos por usuarios
-\`\`\`
+```
 
 ## Módulos Externos (APIs)
 
