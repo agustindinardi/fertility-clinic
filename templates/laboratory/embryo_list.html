@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Embriones{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="text-2xl font-bold">Embriones</h1>
+    <p class="text-muted">Gestión de embriones en el laboratorio</p>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="text-lg font-semibold">Todos los Embriones</h2>
+    </div>
+    <div class="card-body">
+        {% if embryos %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID del Embrión</th>
+                            <th>Paciente</th>
+                            <th>Óvulo Origen</th>
+                            <th>Estado Actual</th>
+                            <th>Calidad</th>
+                            <th>Técnica</th>
+                            <th>Fecha de Creación</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for embryo in embryos %}
+                        <tr>
+                            <td>
+                                <code class="bg-light p-1 rounded">{{ embryo.embryo_id }}</code>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                        {{ embryo.oocyte.puncture.treatment.patient.user.first_name|first }}{{ embryo.oocyte.puncture.treatment.patient.user.last_name|first }}
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold">{{ embryo.oocyte.puncture.treatment.patient.user.get_full_name }}</div>
+                                        <small class="text-muted">{{ embryo.oocyte.puncture.treatment.patient.dni }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <code class="bg-light p-1 rounded">{{ embryo.oocyte.oocyte_id }}</code>
+                            </td>
+                            <td>
+                                {% if embryo.current_state == 'DEVELOPING' %}
+                                    <span class="badge badge-info">Desarrollando</span>
+                                {% elif embryo.current_state == 'TRANSFERRED' %}
+                                    <span class="badge badge-success">Transferido</span>
+                                {% elif embryo.current_state == 'CRYOPRESERVED' %}
+                                    <span class="badge badge-secondary">Criopreservado</span>
+                                {% elif embryo.current_state == 'DISCARDED' %}
+                                    <span class="badge badge-danger">Descartado</span>
+                                {% else %}
+                                    <span class="badge badge-light">{{ embryo.get_current_state_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if embryo.quality %}
+                                    <span class="badge badge-primary">{{ embryo.quality }}/5</span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if embryo.fertilization_technique == 'IVF' %}
+                                    <span class="badge badge-info">FIV</span>
+                                {% elif embryo.fertilization_technique == 'ICSI' %}
+                                    <span class="badge badge-warning">ICSI</span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ embryo.created_at|date:"d/m/Y H:i" }}</td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a href="{% url 'embryo_detail' embryo.id %}" class="btn btn-sm btn-outline-primary">
+                                        Ver Detalle
+                                    </a>
+                                    <a href="{% url 'update_embryo' embryo.id %}" class="btn btn-sm btn-outline-secondary">
+                                        Actualizar
+                                    </a>
+                                    {% if embryo.current_state == 'DEVELOPING' %}
+                                        <a href="{% url 'schedule_transfer' embryo.id %}" class="btn btn-sm btn-outline-success">
+                                            Programar Transferencia
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-4">
+                <div class="text-muted">
+                    <i class="fas fa-seedling fa-3x mb-3"></i>
+                    <p>No hay embriones registrados</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Administrador{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="text-2xl font-bold">Panel de Administración</h1>
+    <p class="text-muted">{{ user.get_full_name }}</p>
+</div>
+
+<div class="grid grid-cols-3 mb-4">
+    <div class="stat-card">
+        <div class="stat-value">{{ total_users }}</div>
+        <div class="stat-label">Usuarios Totales</div>
+    </div>
+    <div class="stat-card secondary">
+        <div class="stat-value">{{ total_patients }}</div>
+        <div class="stat-label">Pacientes Registrados</div>
+    </div>
+    <div class="stat-card accent">
+        <div class="stat-value">{{ active_treatments }}</div>
+        <div class="stat-label">Tratamientos Activos</div>
+    </div>
+</div>
+
+<div class="grid grid-cols-2" style="gap: 1.5rem;">
+    <div class="card">
+        <div class="card-header">Gestión de Usuarios</div>
+        <div class="card-body">
+            <p class="mb-3">Administre usuarios del sistema, cree nuevos usuarios de staff y gestione permisos.</p>
+            <div class="d-flex gap-2">
+                <a href="{% url 'manage_users' %}" class="btn btn-primary">Ver Usuarios</a>
+                <a href="{% url 'create_staff_user' %}" class="btn btn-secondary">Crear Usuario</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Reportes y Estadísticas</div>
+        <div class="card-body">
+            <p class="mb-3">Acceda a reportes detallados y estadísticas del sistema.</p>
+            <div class="d-flex gap-2">
+                <a href="#" class="btn btn-outline">Ver Reportes</a>
+                <a href="#" class="btn btn-outline">Exportar Datos</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-4 mt-4">
+    <a href="{% url 'manage_users' %}" class="card" style="text-decoration: none; text-align: center;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">👥</div>
+        <div class="font-semibold">Usuarios</div>
+        <p class="text-sm text-muted">{{ total_users }} usuarios</p>
+    </a>
+    
+    <a href="{% url 'patient_list' %}" class="card" style="text-decoration: none; text-align: center;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏥</div>
+        <div class="font-semibold">Pacientes</div>
+        <p class="text-sm text-muted">{{ total_patients }} pacientes</p>
+    </a>
+    
+    <a href="{% url 'treatment_list' %}" class="card" style="text-decoration: none; text-align: center;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">💊</div>
+        <div class="font-semibold">Tratamientos</div>
+        <p class="text-sm text-muted">{{ active_treatments }} activos</p>
+    </a>
+    
+    <a href="/admin/" class="card" style="text-decoration: none; text-align: center;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚙️</div>
+        <div class="font-semibold">Admin Django</div>
+        <p class="text-sm text-muted">Panel avanzado</p>
+    </a>
+</div>
+{% endblock %}

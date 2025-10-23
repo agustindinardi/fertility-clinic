@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Laboratorio{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="text-2xl font-bold">Panel de Laboratorio</h1>
+    <p class="text-muted">{{ user.get_full_name }}</p>
+</div>
+
+<div class="grid grid-cols-3 mb-4">
+    <div class="stat-card">
+        <div class="stat-value">{{ recent_punctures.count }}</div>
+        <div class="stat-label">Punciones Recientes</div>
+    </div>
+    <div class="stat-card secondary">
+        <div class="stat-value">{{ pending_oocytes }}</div>
+        <div class="stat-label">Óvulos en Proceso</div>
+    </div>
+    <div class="stat-card accent">
+        <div class="stat-value">{{ developing_embryos }}</div>
+        <div class="stat-label">Embriones en Desarrollo</div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="d-flex justify-between align-center mb-3">
+        <div class="card-header" style="margin: 0;">Punciones Recientes</div>
+        <a href="{% url 'puncture_list' %}" class="btn btn-sm btn-outline">Ver Todas</a>
+    </div>
+    <div class="card-body">
+        {% if recent_punctures %}
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Paciente</th>
+                            <th>Quirófano</th>
+                            <th>Óvulos</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for puncture in recent_punctures %}
+                            <tr>
+                                <td>{{ puncture.date|date:"d/m/Y H:i" }}</td>
+                                <td>{{ puncture.treatment.patient.user.get_full_name }}</td>
+                                <td>{{ puncture.operating_room }}</td>
+                                <td>{{ puncture.oocytes.count }}</td>
+                                <td>
+                                    <a href="{% url 'puncture_detail' puncture.id %}" class="btn btn-sm btn-primary">
+                                        Ver
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">🔬</div>
+                <p class="empty-state-title">No hay punciones recientes</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="grid grid-cols-4">
+    <a href="{% url 'puncture_list' %}" class="card" style="text-decoration: none; text-align: center;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">➕</div>
+        <div class="font-semibold">Nueva Punción</div>
+    </a>
+    
+    <a href="{% url 'oocyte_list' %}" class="card" style="text-decoration: none; text-align: center;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🥚</div>
+        <div class="font-semibold">Gestionar Óvulos</div>
+    </a>
+    
+    <a href="{% url 'embryo_list' %}" class="card" style="text-decoration: none; text-align: center;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🧬</div>
+        <div class="font-semibold">Gestionar Embriones</div>
+    </a>
+    
+    <a href="{% url 'embryo_list' %}" class="card" style="text-decoration: none; text-align: center;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">❄️</div>
+        <div class="font-semibold">Criopreservación</div>
+    </a>
+</div>
+{% endblock %}

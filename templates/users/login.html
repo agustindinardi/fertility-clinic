@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Iniciar Sesión - Clínica de Fertilidad{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1 class="auth-title">🏥 Clínica de Fertilidad</h1>
+            <p class="auth-subtitle">Inicie sesión para acceder al sistema</p>
+        </div>
+
+        <form method="post" data-validate>
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="username" class="form-label">Usuario</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    class="form-control" 
+                    placeholder="Ingrese su usuario"
+                    required
+                    autofocus
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Contraseña</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    class="form-control" 
+                    placeholder="Ingrese su contraseña"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                Iniciar Sesión
+            </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 1.5rem;">
+            <p class="text-muted" style="font-size: 0.875rem;">
+                ¿No tiene cuenta? 
+                <a href="{% url 'register' %}" style="color: var(--primary); text-decoration: none; font-weight: 600;">
+                    Registrarse como paciente
+                </a>
+            </p>
+        </div>
+
+        <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+            <p style="font-size: 0.8125rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+                <strong>Usuarios de prueba:</strong>
+            </p>
+            <div style="font-size: 0.75rem; color: var(--text-secondary); line-height: 1.8;">
+                <div><strong>Admin:</strong> admin / admin123</div>
+                <div><strong>Director:</strong> director / director123</div>
+                <div><strong>Médico:</strong> drlopez / doctor123</div>
+                <div><strong>Lab:</strong> labop1 / labop123</div>
+                <div><strong>Paciente:</strong> paciente1 / paciente123</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

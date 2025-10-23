@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Médico{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="text-2xl font-bold">Panel Médico</h1>
+    <p class="text-muted">Dr./Dra. {{ user.get_full_name }}</p>
+</div>
+
+<div class="grid grid-cols-3 mb-4">
+    <div class="stat-card">
+        <div class="stat-value">{{ patients.count }}</div>
+        <div class="stat-label">Pacientes</div>
+    </div>
+    <div class="stat-card secondary">
+        <div class="stat-value">{{ treatments.count }}</div>
+        <div class="stat-label">Tratamientos Activos</div>
+    </div>
+    <div class="stat-card accent">
+        <div class="stat-value">0</div>
+        <div class="stat-label">Consultas Hoy</div>
+    </div>
+</div>
+
+<div class="grid grid-cols-2" style="gap: 1.5rem;">
+    <div class="card">
+        <div class="d-flex justify-between align-center mb-3">
+            <div class="card-header" style="margin: 0;">Pacientes Recientes</div>
+            <a href="{% url 'patient_list' %}" class="btn btn-sm btn-outline">Ver Todos</a>
+        </div>
+        <div class="card-body">
+            {% if patients %}
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Paciente</th>
+                                <th>DNI</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for patient in patients %}
+                                <tr>
+                                    <td>{{ patient.user.get_full_name }}</td>
+                                    <td>{{ patient.dni|default:"N/A" }}</td>
+                                    <td>
+                                        <a href="{% url 'patient_detail' patient.id %}" class="btn btn-sm btn-primary">
+                                            Ver
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>No hay pacientes asignados</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="d-flex justify-between align-center mb-3">
+            <div class="card-header" style="margin: 0;">Tratamientos Activos</div>
+            <a href="{% url 'treatment_list' %}" class="btn btn-sm btn-outline">Ver Todos</a>
+        </div>
+        <div class="card-body">
+            {% if treatments %}
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    {% for treatment in treatments %}
+                        <div style="padding: 1rem; border: 1px solid var(--border); border-radius: 0.5rem;">
+                            <div class="d-flex justify-between align-center mb-2">
+                                <span class="font-semibold">{{ treatment.patient.user.get_full_name }}</span>
+                                <span class="badge badge-success">{{ treatment.get_status_display }}</span>
+                            </div>
+                            <p class="text-sm text-muted">{{ treatment.get_objective_display }}</p>
+                            <a href="{% url 'treatment_detail' treatment.id %}" class="btn btn-sm btn-outline mt-2">
+                                Ver Detalles
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>No hay tratamientos activos</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-4 mt-4">
+    <a href="{% url 'patient_list' %}" class="card" style="text-decoration: none; text-align: center;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">👥</div>
+        <div class="font-semibold">Pacientes</div>
+    </a>
+    
+    <a href="{% url 'patient_list' %}" class="card" style="text-decoration: none; text-align: center;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">➕</div>
+        <div class="font-semibold">Nuevo Tratamiento</div>
+    </a>
+    
+    <a href="{% url 'calendar_placeholder' %}" class="card" style="text-decoration: none; text-align: center;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">📅</div>
+        <div class="font-semibold">Calendario</div>
+    </a>
+    
+    <a href="{% url 'notifications_placeholder' %}" class="card" style="text-decoration: none; text-align: center;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔔</div>
+        <div class="font-semibold">Notificaciones</div>
+    </a>
+</div>
+{% endblock %}

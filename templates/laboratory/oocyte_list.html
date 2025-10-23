@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Óvulos{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="text-2xl font-bold">Óvulos</h1>
+    <p class="text-muted">Gestión de óvulos en el laboratorio</p>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="text-lg font-semibold">Todos los Óvulos</h2>
+    </div>
+    <div class="card-body">
+        {% if oocytes %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID del Óvulo</th>
+                            <th>Paciente</th>
+                            <th>Estado Actual</th>
+                            <th>Estado Inicial</th>
+                            <th>Tiempo de Maduración</th>
+                            <th>Fecha de Creación</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for oocyte in oocytes %}
+                        <tr>
+                            <td>
+                                <code class="bg-light p-1 rounded">{{ oocyte.oocyte_id }}</code>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                        {{ oocyte.puncture.treatment.patient.user.first_name|first }}{{ oocyte.puncture.treatment.patient.user.last_name|first }}
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold">{{ oocyte.puncture.treatment.patient.user.get_full_name }}</div>
+                                        <small class="text-muted">{{ oocyte.puncture.treatment.patient.dni }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                {% if oocyte.current_state == 'VERY_IMMATURE' %}
+                                    <span class="badge badge-warning">Muy Inmaduro</span>
+                                {% elif oocyte.current_state == 'IMMATURE' %}
+                                    <span class="badge badge-info">Inmaduro</span>
+                                {% elif oocyte.current_state == 'MATURE' %}
+                                    <span class="badge badge-success">Maduro</span>
+                                {% elif oocyte.current_state == 'FERTILIZED' %}
+                                    <span class="badge badge-primary">Fertilizado</span>
+                                {% elif oocyte.current_state == 'CRYOPRESERVED' %}
+                                    <span class="badge badge-secondary">Criopreservado</span>
+                                {% elif oocyte.current_state == 'DISCARDED' %}
+                                    <span class="badge badge-danger">Descartado</span>
+                                {% else %}
+                                    <span class="badge badge-light">{{ oocyte.get_current_state_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if oocyte.initial_state == 'VERY_IMMATURE' %}
+                                    <span class="badge badge-warning">Muy Inmaduro</span>
+                                {% elif oocyte.initial_state == 'IMMATURE' %}
+                                    <span class="badge badge-info">Inmaduro</span>
+                                {% elif oocyte.initial_state == 'MATURE' %}
+                                    <span class="badge badge-success">Maduro</span>
+                                {% else %}
+                                    <span class="badge badge-light">{{ oocyte.get_initial_state_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if oocyte.maturation_time %}
+                                    {{ oocyte.maturation_time }}h
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ oocyte.created_at|date:"d/m/Y H:i" }}</td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a href="{% url 'oocyte_detail' oocyte.id %}" class="btn btn-sm btn-outline-primary">
+                                        Ver Detalle
+                                    </a>
+                                    <a href="{% url 'update_oocyte' oocyte.id %}" class="btn btn-sm btn-outline-secondary">
+                                        Actualizar
+                                    </a>
+                                    {% if oocyte.current_state == 'MATURE' %}
+                                        <a href="{% url 'create_embryo' oocyte.id %}" class="btn btn-sm btn-outline-success">
+                                            Fertilizar
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-4">
+                <div class="text-muted">
+                    <i class="fas fa-egg fa-3x mb-3"></i>
+                    <p>No hay óvulos registrados</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+
+{% block title %}Iniciar Tratamiento{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="text-2xl font-bold">Iniciar Tratamiento</h1>
+    <p class="text-muted">Paciente: {{ patient.user.get_full_name }}</p>
+</div>
+
+<form method="post" data-validate>
+    {% csrf_token %}
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Información del Tratamiento -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-lg font-semibold">Información del Tratamiento</h2>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="{{ treatment_form.objective.id_for_label }}" class="form-label">
+                        {{ treatment_form.objective.label }}
+                    </label>
+                    {{ treatment_form.objective }}
+                    {% if treatment_form.objective.errors %}
+                        <div class="invalid-feedback">
+                            {{ treatment_form.objective.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ treatment_form.notes.id_for_label }}" class="form-label">
+                        {{ treatment_form.notes.label }}
+                    </label>
+                    {{ treatment_form.notes }}
+                    {% if treatment_form.notes.errors %}
+                        <div class="invalid-feedback">
+                            {{ treatment_form.notes.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Antecedentes Médicos -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-lg font-semibold">Antecedentes Médicos</h2>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="{{ history_form.clinical_history.id_for_label }}" class="form-label">
+                        {{ history_form.clinical_history.label }}
+                    </label>
+                    {{ history_form.clinical_history }}
+                    {% if history_form.clinical_history.errors %}
+                        <div class="invalid-feedback">
+                            {{ history_form.clinical_history.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ history_form.surgical_history.id_for_label }}" class="form-label">
+                        {{ history_form.surgical_history.label }}
+                    </label>
+                    {{ history_form.surgical_history }}
+                    {% if history_form.surgical_history.errors %}
+                        <div class="invalid-feedback">
+                            {{ history_form.surgical_history.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ history_form.personal_history.id_for_label }}" class="form-label">
+                        {{ history_form.personal_history.label }}
+                    </label>
+                    {{ history_form.personal_history }}
+                    {% if history_form.personal_history.errors %}
+                        <div class="invalid-feedback">
+                            {{ history_form.personal_history.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ history_form.family_history.id_for_label }}" class="form-label">
+                        {{ history_form.family_history.label }}
+                    </label>
+                    {{ history_form.family_history }}
+                    {% if history_form.family_history.errors %}
+                        <div class="invalid-feedback">
+                            {{ history_form.family_history.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Antecedentes Ginecológicos -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h2 class="text-lg font-semibold">Antecedentes Ginecológicos</h2>
+        </div>
+        <div class="card-body">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="mb-3">
+                    <label for="{{ history_form.menarche_age.id_for_label }}" class="form-label">
+                        {{ history_form.menarche_age.label }}
+                    </label>
+                    {{ history_form.menarche_age }}
+                    {% if history_form.menarche_age.errors %}
+                        <div class="invalid-feedback">
+                            {{ history_form.menarche_age.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ history_form.cycle_length.id_for_label }}" class="form-label">
+                        {{ history_form.cycle_length.label }}
+                    </label>
+                    {{ history_form.cycle_length }}
+                    {% if history_form.cycle_length.errors %}
+                        <div class="invalid-feedback">
+                            {{ history_form.cycle_length.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ history_form.cycle_duration.id_for_label }}" class="form-label">
+                        {{ history_form.cycle_duration.label }}
+                    </label>
+                    {{ history_form.cycle_duration }}
+                    {% if history_form.cycle_duration.errors %}
+                        <div class="invalid-feedback">
+                            {{ history_form.cycle_duration.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ history_form.gravidity.id_for_label }}" class="form-label">
+                        {{ history_form.gravidity.label }}
+                    </label>
+                    {{ history_form.gravidity }}
+                    {% if history_form.gravidity.errors %}
+                        <div class="invalid-feedback">
+                            {{ history_form.gravidity.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información de la Pareja -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h2 class="text-lg font-semibold">Información de la Pareja (Opcional)</h2>
+        </div>
+        <div class="card-body">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="mb-3">
+                    <label for="{{ partner_form.first_name.id_for_label }}" class="form-label">
+                        {{ partner_form.first_name.label }}
+                    </label>
+                    {{ partner_form.first_name }}
+                    {% if partner_form.first_name.errors %}
+                        <div class="invalid-feedback">
+                            {{ partner_form.first_name.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ partner_form.last_name.id_for_label }}" class="form-label">
+                        {{ partner_form.last_name.label }}
+                    </label>
+                    {{ partner_form.last_name }}
+                    {% if partner_form.last_name.errors %}
+                        <div class="invalid-feedback">
+                            {{ partner_form.last_name.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ partner_form.birth_date.id_for_label }}" class="form-label">
+                        {{ partner_form.birth_date.label }}
+                    </label>
+                    {{ partner_form.birth_date }}
+                    {% if partner_form.birth_date.errors %}
+                        <div class="invalid-feedback">
+                            {{ partner_form.birth_date.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ partner_form.genital_history.id_for_label }}" class="form-label">
+                        {{ partner_form.genital_history.label }}
+                    </label>
+                    {{ partner_form.genital_history }}
+                    {% if partner_form.genital_history.errors %}
+                        <div class="invalid-feedback">
+                            {{ partner_form.genital_history.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save me-1"></i>
+            Iniciar Tratamiento
+        </button>
+        <a href="{% url 'patient_detail' patient.id %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>
+            Cancelar
+        </a>
+    </div>
+</form>
+{% endblock %}

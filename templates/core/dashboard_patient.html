@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Paciente{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="text-2xl font-bold">Bienvenido/a, {{ user.get_full_name }}</h1>
+    <p class="text-muted">Panel de control del paciente</p>
+</div>
+
+<div class="grid grid-cols-3 mb-4">
+    <div class="stat-card">
+        <div class="stat-value">{{ treatments.count }}</div>
+        <div class="stat-label">Tratamientos Activos</div>
+    </div>
+    <div class="stat-card secondary">
+        <div class="stat-value">{{ recent_orders.count }}</div>
+        <div class="stat-label">Órdenes Médicas</div>
+    </div>
+    <div class="stat-card accent">
+        <div class="stat-value">0</div>
+        <div class="stat-label">Próximos Turnos</div>
+    </div>
+</div>
+
+<div class="grid grid-cols-2" style="gap: 1.5rem;">
+    <div class="card">
+        <div class="card-header">Mis Tratamientos</div>
+        <div class="card-body">
+            {% if treatments %}
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    {% for treatment in treatments %}
+                        <div style="padding: 1rem; border: 1px solid var(--border); border-radius: 0.5rem;">
+                            <div class="d-flex justify-between align-center mb-2">
+                                <span class="font-semibold">{{ treatment.get_objective_display }}</span>
+                                <span class="badge badge-{% if treatment.status == 'ACTIVE' %}success{% else %}primary{% endif %}">
+                                    {{ treatment.get_status_display }}
+                                </span>
+                            </div>
+                            <p class="text-sm text-muted">Dr. {{ treatment.doctor.get_full_name }}</p>
+                            <p class="text-sm text-muted">Iniciado: {{ treatment.created_at|date:"d/m/Y" }}</p>
+                            <a href="{% url 'treatment_detail' treatment.id %}" class="btn btn-sm btn-outline mt-2">
+                                Ver Detalles
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">📋</div>
+                    <p class="empty-state-title">No hay tratamientos</p>
+                    <p>Aún no tiene tratamientos asignados</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Órdenes Médicas Recientes</div>
+        <div class="card-body">
+            {% if recent_orders %}
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    {% for order in recent_orders %}
+                        <div style="padding: 1rem; border: 1px solid var(--border); border-radius: 0.5rem;">
+                            <div class="d-flex justify-between align-center mb-2">
+                                <span class="badge badge-{% if order.order_type == 'STUDY' %}info{% else %}warning{% endif %}">
+                                    {{ order.get_order_type_display }}
+                                </span>
+                                <span class="text-sm text-muted">{{ order.created_at|date:"d/m/Y" }}</span>
+                            </div>
+                            <p class="text-sm">{{ order.description|truncatewords:15 }}</p>
+                            {% if order.pdf_file %}
+                                <a href="{{ order.pdf_file.url }}" class="btn btn-sm btn-primary mt-2" target="_blank">
+                                    Descargar PDF
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">📄</div>
+                    <p class="empty-state-title">No hay órdenes</p>
+                    <p>No tiene órdenes médicas recientes</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-3 mt-4">
+    <a href="{% url 'appointments' %}" class="card" style="text-decoration: none; text-align: center;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📅</div>
+        <div class="font-semibold">Solicitar Turno</div>
+        <p class="text-sm text-muted">Agende su próxima consulta</p>
+    </a>
+    
+    <a href="{% url 'patient_treatments' %}" class="card" style="text-decoration: none; text-align: center;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">💊</div>
+        <div class="font-semibold">Ver Tratamientos</div>
+        <p class="text-sm text-muted">Historial completo</p>
+    </a>
+    
+    <a href="{% url 'complete_patient_profile' %}" class="card" style="text-decoration: none; text-align: center;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">👤</div>
+        <div class="font-semibold">Completar Perfil</div>
+        <p class="text-sm text-muted">Actualice sus datos</p>
+    </a>
+</div>
+{% endblock %}

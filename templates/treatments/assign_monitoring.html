@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Asignar Días de Monitoreo{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="text-2xl font-bold">Asignar Días de Monitoreo</h1>
+    <p class="text-muted">Tratamiento: {{ treatment.patient.user.get_full_name }}</p>
+</div>
+
+<form method="post" data-validate>
+    {% csrf_token %}
+    
+    <div class="card">
+        <div class="card-header">
+            <h2 class="text-lg font-semibold">Seleccionar Días de Monitoreo</h2>
+            <p class="text-sm text-muted">Selecciona los días dentro de los próximos 20 días para el monitoreo</p>
+        </div>
+        <div class="card-body">
+            <div class="mb-4">
+                <label class="form-label">Días disponibles para monitoreo:</label>
+                <div class="grid grid-cols-7 gap-2 mt-2">
+                    {% for i in "1234567890123456789012345678901234567890"|make_list %}
+                        {% if forloop.counter <= 20 %}
+                            <div class="form-check">
+                                <input type="checkbox" 
+                                       class="form-check-input" 
+                                       name="monitoring_dates" 
+                                       value="{{ forloop.counter|add:0|date:'Y-m-d' }}"
+                                       id="date_{{ forloop.counter }}">
+                                <label class="form-check-label text-sm" for="date_{{ forloop.counter }}">
+                                    Día {{ forloop.counter }}
+                                </label>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Información:</strong> Los días seleccionados aparecerán en el calendario del paciente para que pueda reservar turnos de monitoreo.
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-calendar-plus me-1"></i>
+            Asignar Días
+        </button>
+        <a href="{% url 'treatment_detail' treatment.id %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>
+            Cancelar
+        </a>
+    </div>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Generate actual dates for the next 20 days
+    const today = new Date();
+    const checkboxes = document.querySelectorAll('input[name="monitoring_dates"]');
+    
+    checkboxes.forEach((checkbox, index) => {
+        const date = new Date(today);
+        date.setDate(today.getDate() + index + 1);
+        const dateString = date.toISOString().split('T')[0];
+        checkbox.value = dateString;
+        
+        const label = checkbox.nextElementSibling;
+        label.textContent = date.toLocaleDateString('es-ES', { 
+            day: '2-digit', 
+            month: '2-digit' 
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema de Clínica de Fertilidad{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="{% url 'dashboard' %}" class="navbar-brand">🏥 Clínica Fertilidad</a>
+                <ul class="navbar-nav">
+                    <li><a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a></li>
+                    
+                    {% if user.is_patient %}
+                        <li><a href="{% url 'patient_treatments' %}" class="nav-link">Mis Tratamientos</a></li>
+                        <li><a href="{% url 'patient_orders' %}" class="nav-link">Órdenes Médicas</a></li>
+                        <li><a href="{% url 'appointments' %}" class="nav-link">Turnos</a></li>
+                    {% endif %}
+                    
+                    {% if user.is_doctor %}
+                        <li><a href="{% url 'patient_list' %}" class="nav-link">Pacientes</a></li>
+                        <li><a href="{% url 'treatment_list' %}" class="nav-link">Tratamientos</a></li>
+                        <li><a href="{% url 'calendar_placeholder' %}" class="nav-link">Calendario</a></li>
+                    {% endif %}
+                    
+                    {% if user.is_lab_operator %}
+                        <li><a href="{% url 'puncture_list' %}" class="nav-link">Punciones</a></li>
+                        <li><a href="{% url 'oocyte_list' %}" class="nav-link">Óvulos</a></li>
+                        <li><a href="{% url 'embryo_list' %}" class="nav-link">Embriones</a></li>
+                    {% endif %}
+                    
+                    {% if user.is_admin %}
+                        <li><a href="{% url 'manage_users' %}" class="nav-link">Usuarios</a></li>
+                        <li><a href="{% url 'create_staff_user' %}" class="nav-link">Crear Usuario</a></li>
+                    {% endif %}
+                    
+                    <li><a href="{% url 'profile' %}" class="nav-link">Perfil</a></li>
+                    <li><a href="{% url 'logout' %}" class="nav-link">Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
+
+    <main style="padding: 2rem 0; min-height: calc(100vh - 80px);">
+        <div class="container">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    {% block extra_js %}{% endblock %}
+    
+    <script>
+        // Form validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const forms = document.querySelectorAll('form[data-validate]');
+            forms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    let isValid = true;
+                    const requiredFields = form.querySelectorAll('[required]');
+                    
+                    requiredFields.forEach(field => {
+                        if (!field.value.trim()) {
+                            isValid = false;
+                            field.classList.add('is-invalid');
+                            
+                            let feedback = field.nextElementSibling;
+                            if (!feedback || !feedback.classList.contains('invalid-feedback')) {
+                                feedback = document.createElement('div');
+                                feedback.className = 'invalid-feedback';
+                                feedback.textContent = 'Este campo es obligatorio';
+                                field.parentNode.appendChild(feedback);
+                            }
+                        } else {
+                            field.classList.remove('is-invalid');
+                            const feedback = field.nextElementSibling;
+                            if (feedback && feedback.classList.contains('invalid-feedback')) {
+                                feedback.remove();
+                            }
+                        }
+                    });
+                    
+                    if (!isValid) {
+                        e.preventDefault();
+                    }
+                });
+                
+                // Remove validation on input
+                const inputs = form.querySelectorAll('[required]');
+                inputs.forEach(input => {
+                    input.addEventListener('input', function() {
+                        if (this.value.trim()) {
+                            this.classList.remove('is-invalid');
+                            const feedback = this.nextElementSibling;
+                            if (feedback && feedback.classList.contains('invalid-feedback')) {
+                                feedback.remove();
+                            }
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Tratamientos{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="text-2xl font-bold">Tratamientos</h1>
+    <p class="text-muted">Gestión de tratamientos de fertilidad</p>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="text-lg font-semibold">Todos los Tratamientos</h2>
+    </div>
+    <div class="card-body">
+        {% if treatments %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Paciente</th>
+                            <th>Médico</th>
+                            <th>Objetivo</th>
+                            <th>Estado</th>
+                            <th>Fecha de Inicio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for treatment in treatments %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                        {{ treatment.patient.user.first_name|first }}{{ treatment.patient.user.last_name|first }}
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold">{{ treatment.patient.user.get_full_name }}</div>
+                                        <small class="text-muted">{{ treatment.patient.dni }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ treatment.doctor.get_full_name }}</td>
+                            <td>
+                                <span class="badge badge-info">{{ treatment.get_objective_display }}</span>
+                            </td>
+                            <td>
+                                {% if treatment.status == 'ACTIVE' %}
+                                    <span class="badge badge-success">Activo</span>
+                                {% elif treatment.status == 'COMPLETED' %}
+                                    <span class="badge badge-primary">Completado</span>
+                                {% elif treatment.status == 'CANCELLED' %}
+                                    <span class="badge badge-danger">Cancelado</span>
+                                {% else %}
+                                    <span class="badge badge-secondary">{{ treatment.get_status_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ treatment.created_at|date:"d/m/Y" }}</td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a href="{% url 'treatment_detail' treatment.id %}" class="btn btn-sm btn-outline-primary">
+                                        Ver Detalle
+                                    </a>
+                                    {% if user.is_doctor %}
+                                        <a href="{% url 'add_study_result' treatment.id %}" class="btn btn-sm btn-outline-secondary">
+                                            Agregar Estudio
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-4">
+                <div class="text-muted">
+                    <i class="fas fa-clipboard-list fa-3x mb-3"></i>
+                    <p>No hay tratamientos registrados</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

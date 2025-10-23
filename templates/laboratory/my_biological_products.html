@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block title %}Mis Productos Biológicos{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="text-2xl font-bold">Mis Productos Biológicos</h1>
+    <p class="text-muted">Óvulos y embriones criopreservados</p>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Óvulos Criopreservados -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="text-lg font-semibold">
+                <i class="fas fa-egg me-2"></i>
+                Óvulos Criopreservados
+            </h2>
+        </div>
+        <div class="card-body">
+            {% if oocytes %}
+                <div class="space-y-3">
+                    {% for oocyte in oocytes %}
+                    <div class="p-3 border rounded">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="font-semibold">{{ oocyte.oocyte_id }}</div>
+                                <div class="text-sm text-muted">
+                                    Punción: {{ oocyte.puncture.puncture_date|date:"d/m/Y" }}
+                                </div>
+                                <div class="text-sm text-muted">
+                                    Estado inicial: {{ oocyte.get_initial_state_display }}
+                                </div>
+                                {% if oocyte.maturation_time %}
+                                <div class="text-sm text-muted">
+                                    Tiempo de maduración: {{ oocyte.maturation_time }}h
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <span class="badge badge-secondary">Criopreservado</span>
+                            </div>
+                        </div>
+                        {% if oocyte.notes %}
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <strong>Notas:</strong> {{ oocyte.notes }}
+                            </small>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-4">
+                    <div class="text-muted">
+                        <i class="fas fa-egg fa-2x mb-2"></i>
+                        <p>No tienes óvulos criopreservados</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Embriones Criopreservados -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="text-lg font-semibold">
+                <i class="fas fa-seedling me-2"></i>
+                Embriones Criopreservados
+            </h2>
+        </div>
+        <div class="card-body">
+            {% if embryos %}
+                <div class="space-y-3">
+                    {% for embryo in embryos %}
+                    <div class="p-3 border rounded">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="font-semibold">{{ embryo.embryo_id }}</div>
+                                <div class="text-sm text-muted">
+                                    Óvulo origen: {{ embryo.oocyte.oocyte_id }}
+                                </div>
+                                <div class="text-sm text-muted">
+                                    Técnica: {{ embryo.get_fertilization_technique_display }}
+                                </div>
+                                {% if embryo.quality %}
+                                <div class="text-sm text-muted">
+                                    Calidad: {{ embryo.quality }}/5
+                                </div>
+                                {% endif %}
+                                {% if embryo.cryopreservation_tube %}
+                                <div class="text-sm text-muted">
+                                    Tubo: {{ embryo.cryopreservation_tube }}
+                                </div>
+                                {% endif %}
+                                {% if embryo.cryopreservation_rack %}
+                                <div class="text-sm text-muted">
+                                    Rack: {{ embryo.cryopreservation_rack }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <span class="badge badge-secondary">Criopreservado</span>
+                            </div>
+                        </div>
+                        {% if embryo.notes %}
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <strong>Notas:</strong> {{ embryo.notes }}
+                            </small>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-4">
+                    <div class="text-muted">
+                        <i class="fas fa-seedling fa-2x mb-2"></i>
+                        <p>No tienes embriones criopreservados</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Resumen -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h2 class="text-lg font-semibold">Resumen</h2>
+    </div>
+    <div class="card-body">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="text-center">
+                <div class="text-2xl font-bold text-primary">{{ oocytes.count }}</div>
+                <div class="text-sm text-muted">Óvulos Criopreservados</div>
+            </div>
+            <div class="text-center">
+                <div class="text-2xl font-bold text-success">{{ embryos.count }}</div>
+                <div class="text-sm text-muted">Embriones Criopreservados</div>
+            </div>
+            <div class="text-center">
+                <div class="text-2xl font-bold text-info">{{ oocytes.count|add:embryos.count }}</div>
+                <div class="text-sm text-muted">Total de Productos</div>
+            </div>
+            <div class="text-center">
+                <div class="text-2xl font-bold text-warning">
+                    {% if embryos.count > 0 %}
+                        {{ embryos.count|floatformat:0|div:oocytes.count|floatformat:1 }}%
+                    {% else %}
+                        0%
+                    {% endif %}
+                </div>
+                <div class="text-sm text-muted">Tasa de Fertilización</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Mis Órdenes Médicas{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="text-2xl font-bold">Mis Órdenes Médicas</h1>
+    <p class="text-muted">Órdenes de estudios y recetas médicas</p>
+</div>
+
+<div class="grid grid-cols-1 gap-4">
+    {% for order in orders %}
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="text-lg font-semibold">{{ order.get_order_type_display }}</h3>
+                    <p class="text-sm text-muted">Tratamiento #{{ order.treatment.id }} - {{ order.created_at|date:"d/m/Y H:i" }}</p>
+                </div>
+                <div>
+                    {% if order.order_type == 'STUDY' %}
+                        <span class="badge badge-info">Estudio</span>
+                    {% elif order.order_type == 'PRESCRIPTION' %}
+                        <span class="badge badge-warning">Receta</span>
+                    {% else %}
+                        <span class="badge badge-secondary">{{ order.get_order_type_display }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <strong>Descripción:</strong>
+                <p>{{ order.description }}</p>
+            </div>
+            
+            {% if order.medication_details %}
+            <div class="mb-3">
+                <strong>Detalles de medicación:</strong>
+                <p>{{ order.medication_details }}</p>
+            </div>
+            {% endif %}
+            
+            {% if order.instructions %}
+            <div class="mb-3">
+                <strong>Instrucciones:</strong>
+                <p>{{ order.instructions }}</p>
+            </div>
+            {% endif %}
+            
+            <div class="d-flex gap-2">
+                {% if order.file %}
+                    <a href="{{ order.file.url }}" target="_blank" class="btn btn-primary">
+                        <i class="fas fa-download me-1"></i>
+                        Descargar PDF
+                    </a>
+                {% endif %}
+                
+                <a href="{% url 'treatment_detail' order.treatment.id %}" class="btn btn-outline-primary">
+                    Ver Tratamiento
+                </a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="card">
+        <div class="card-body text-center py-8">
+            <div class="text-muted">
+                <i class="fas fa-file-medical fa-3x mb-3"></i>
+                <h3>No tienes órdenes médicas</h3>
+                <p>Las órdenes médicas aparecerán aquí cuando tu médico las genere</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

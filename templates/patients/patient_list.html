@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Pacientes{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="text-2xl font-bold">Pacientes</h1>
+    <p class="text-muted">Gestión de pacientes</p>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="text-lg font-semibold">Lista de Pacientes</h2>
+            <div class="d-flex gap-2">
+                <form method="get" class="d-flex gap-2">
+                    <input type="text" name="search" value="{{ search_query }}" placeholder="Buscar paciente..." class="form-control">
+                    <button type="submit" class="btn btn-outline-primary">Buscar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        {% if patients %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Paciente</th>
+                            <th>DNI</th>
+                            <th>Teléfono</th>
+                            <th>Email</th>
+                            <th>Tratamientos</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for patient in patients %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                        {{ patient.user.first_name|first }}{{ patient.user.last_name|first }}
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold">{{ patient.user.get_full_name }}</div>
+                                        <small class="text-muted">{{ patient.birth_date|date:"d/m/Y" }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ patient.dni }}</td>
+                            <td>{{ patient.phone }}</td>
+                            <td>{{ patient.user.email }}</td>
+                            <td>
+                                <span class="badge badge-info">{{ patient.treatments.count }} tratamientos</span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a href="{% url 'patient_detail' patient.id %}" class="btn btn-sm btn-outline-primary">
+                                        Ver Detalle
+                                    </a>
+                                    <a href="{% url 'initiate_treatment' patient.id %}" class="btn btn-sm btn-outline-success">
+                                        Nuevo Tratamiento
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-4">
+                <div class="text-muted">
+                    <i class="fas fa-users fa-3x mb-3"></i>
+                    <p>No hay pacientes registrados</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

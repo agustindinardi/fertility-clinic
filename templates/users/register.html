@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}Registro de Paciente - Clínica de Fertilidad{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1 class="auth-title">Registro de Paciente</h1>
+            <p class="auth-subtitle">Complete el formulario para crear su cuenta</p>
+        </div>
+
+        <form method="post" data-validate>
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-2" style="gap: 1rem;">
+                <div class="form-group">
+                    <label for="first_name" class="form-label">Nombre</label>
+                    <input 
+                        type="text" 
+                        id="first_name" 
+                        name="first_name" 
+                        class="form-control" 
+                        placeholder="Nombre"
+                        required
+                        value="{{ form.first_name.value|default:'' }}"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="last_name" class="form-label">Apellido</label>
+                    <input 
+                        type="text" 
+                        id="last_name" 
+                        name="last_name" 
+                        class="form-control" 
+                        placeholder="Apellido"
+                        required
+                        value="{{ form.last_name.value|default:'' }}"
+                    >
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="username" class="form-label">Usuario</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    class="form-control" 
+                    placeholder="Elija un nombre de usuario"
+                    required
+                    value="{{ form.username.value|default:'' }}"
+                >
+                <small class="form-text">Solo letras, números y @/./+/-/_</small>
+            </div>
+
+            <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    class="form-control" 
+                    placeholder="correo@ejemplo.com"
+                    required
+                    value="{{ form.email.value|default:'' }}"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="phone" class="form-label">Teléfono</label>
+                <input 
+                    type="tel" 
+                    id="phone" 
+                    name="phone" 
+                    class="form-control" 
+                    placeholder="11-1234-5678"
+                    value="{{ form.phone.value|default:'' }}"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password1" class="form-label">Contraseña</label>
+                <input 
+                    type="password" 
+                    id="password1" 
+                    name="password1" 
+                    class="form-control" 
+                    placeholder="Mínimo 8 caracteres"
+                    required
+                    minlength="8"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password2" class="form-label">Confirmar Contraseña</label>
+                <input 
+                    type="password" 
+                    id="password2" 
+                    name="password2" 
+                    class="form-control" 
+                    placeholder="Repita la contraseña"
+                    required
+                    minlength="8"
+                >
+            </div>
+
+            {% if form.errors %}
+                <div class="alert alert-error">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <div>{{ error }}</div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                Registrarse
+            </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 1.5rem;">
+            <p class="text-muted" style="font-size: 0.875rem;">
+                ¿Ya tiene cuenta? 
+                <a href="{% url 'login' %}" style="color: var(--primary); text-decoration: none; font-weight: 600;">
+                    Iniciar sesión
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Password match validation
+    document.getElementById('password2').addEventListener('input', function() {
+        const password1 = document.getElementById('password1').value;
+        const password2 = this.value;
+        
+        if (password2 && password1 !== password2) {
+            this.setCustomValidity('Las contraseñas no coinciden');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+</script>
+{% endblock %}
