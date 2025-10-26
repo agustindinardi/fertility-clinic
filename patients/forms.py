@@ -7,7 +7,7 @@ class PatientProfileForm(forms.ModelForm):
     
     class Meta:
         model = Patient
-        fields = ['occupation', 'medical_coverage', 'member_number']
+        fields = ['occupation', 'medical_coverage_id', 'medical_coverage_name', 'member_number']
 
 
 class MedicalHistoryForm(forms.ModelForm):

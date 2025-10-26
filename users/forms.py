@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import User
+import requests
 
 
 class PatientRegistrationForm(UserCreationForm):
@@ -11,15 +12,14 @@ class PatientRegistrationForm(UserCreationForm):
         label='Ocupación',
         widget=forms.TextInput(attrs={'placeholder': 'Ej: Ingeniero, Docente, etc.'})
     )
-    medical_coverage = forms.CharField(
-        max_length=100,
-        required=False,
+    medical_coverage = forms.ChoiceField(
+        required=True,
         label='Cobertura Médica',
-        widget=forms.TextInput(attrs={'placeholder': 'Ej: OSDE, Swiss Medical, etc.'})
+        widget=forms.Select(attrs={'class': 'form-control'}),
     )
     member_number = forms.CharField(
         max_length=50,
-        required=False,
+        required=True,
         label='Número de Socio',
         widget=forms.TextInput(attrs={'placeholder': 'Número de afiliado'})
     )
@@ -46,6 +46,20 @@ class PatientRegistrationForm(UserCreationForm):
         self.fields['password1'].widget.attrs.update({'placeholder': 'Mínimo 8 caracteres'})
         self.fields['password2'].widget.attrs.update({'placeholder': 'Repita la contraseña'})
 
+        try:
+            response = requests.get('https://ueozxvwsckonkqypfasa.supabase.co/functions/v1/getObrasSociales', timeout=5)
+            if response.status_code == 200:
+                data = response.json()
+                obras_sociales = data.get('data', [])
+                choices = [('', 'Seleccione una obra social')] + [
+                    (str(obra['id']), f"{obra['nombre']} ({obra['sigla']})") 
+                    for obra in obras_sociales
+                ]
+                self.fields['medical_coverage'].choices = choices
+            else:
+                self.fields['medical_coverage'].choices = [('', 'Error al cargar obras sociales')]
+        except Exception as e:
+            self.fields['medical_coverage'].choices = [('', 'Error al cargar obras sociales')]
 
 class StaffUserCreationForm(UserCreationForm):
     """Form for admin to create staff users (doctors, lab operators)"""

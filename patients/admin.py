@@ -4,9 +4,9 @@ from .models import Patient, MedicalHistory, Partner
 
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
-    list_display = ['get_full_name', 'get_dni', 'get_date_of_birth', 'get_biological_sex', 'medical_coverage', 'occupation']
+    list_display = ['get_full_name', 'get_dni', 'get_date_of_birth', 'get_biological_sex', 'medical_coverage_name', 'occupation']
     search_fields = ['user__first_name', 'user__last_name', 'user__dni', 'user__email']
-    list_filter = ['user__biological_sex', 'medical_coverage']
+    list_filter = ['user__biological_sex']
     
     def get_full_name(self, obj):
         return f"{obj.user.first_name} {obj.user.last_name}"

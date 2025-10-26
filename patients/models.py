@@ -9,7 +9,8 @@ class Patient(models.Model):
     
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='patient_profile')
     occupation = models.CharField(max_length=100, blank=True)
-    medical_coverage = models.CharField(max_length=100, blank=True, verbose_name='Cobertura Médica')
+    medical_coverage_id = models.IntegerField(null=True, blank=True, verbose_name='ID Cobertura Médica')
+    medical_coverage_name = models.CharField(max_length=100, blank=True, verbose_name='Nombre Cobertura Médica')
     member_number = models.CharField(max_length=50, blank=True, verbose_name='Número de Socio')
     
     # Medical history will be created when first appointment is made

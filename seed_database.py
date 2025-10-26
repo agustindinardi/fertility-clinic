@@ -148,7 +148,8 @@ def seed_database():
             user=user,
             defaults={
                 'occupation': 'Empleada',
-                'medical_coverage': 'OSDE',
+                'medical_coverage_id': '1', 
+                'medical_coverage_name': 'OSDE',
                 'member_number': f'OSDE-{dni}',
             }
         )

@@ -5,7 +5,8 @@ from django.contrib import messages
 from .forms import StaffUserCreationForm, UserUpdateForm
 from .forms import PatientRegistrationForm
 from .models import User
-
+import requests
+from patients.models import Patient
 
 def login_view(request):
     """User login view"""
@@ -45,12 +46,28 @@ def register_view(request):
             user = form.save(commit=False)
             user.role = 'PATIENT'
             user.save()
+
+            medical_coverage_id = form.cleaned_data.get('medical_coverage', '')
+            medical_coverage_name = ''
             
-            from patients.models import Patient
+            if medical_coverage_id:
+                try:
+                    response = requests.get('https://ueozxvwsckonkqypfasa.supabase.co/functions/v1/getObrasSociales', timeout=5)
+                    if response.status_code == 200:
+                        data = response.json()
+                        obras_sociales = data.get('data', [])
+                        obra = next((o for o in obras_sociales if str(o['id']) == medical_coverage_id), None)
+                        if obra:
+                            medical_coverage_name = f"{obra['nombre']} ({obra['sigla']})"
+                except Exception as e:
+                    pass
+            
+            
             Patient.objects.create(
                 user=user,
                 occupation=form.cleaned_data.get('occupation', ''),
-                medical_coverage=form.cleaned_data.get('medical_coverage', ''),
+                medical_coverage_id=int(medical_coverage_id) if medical_coverage_id else None,
+                medical_coverage_name=medical_coverage_name,
                 member_number=form.cleaned_data.get('member_number', '')
             )
             
