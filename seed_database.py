@@ -13,7 +13,7 @@ import random
 BASE_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(BASE_DIR))
 
-# Setup Django - ajusta el nombre según tu proyecto
+# Setup Django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fertility_clinic.settings')
 django.setup()
 
@@ -28,7 +28,6 @@ User = get_user_model()
 def seed_database():
     print('🌱 Seeding database...\n')
     
-    # Create admin user
     admin, created = User.objects.get_or_create(
         username='admin',
         defaults={
@@ -36,6 +35,10 @@ def seed_database():
             'first_name': 'Admin',
             'last_name': 'Sistema',
             'role': 'ADMIN',
+            'dni': '20123456',
+            'biological_sex': 'M',
+            'date_of_birth': '1980-01-01',
+            'phone': '11-5555-0000',
             'is_staff': True,
             'is_superuser': True,
         }
@@ -45,7 +48,6 @@ def seed_database():
         admin.save()
         print('✓ Admin creado: admin / admin123')
     
-    # Create medical director
     director, created = User.objects.get_or_create(
         username='director',
         defaults={
@@ -53,6 +55,9 @@ def seed_database():
             'first_name': 'María',
             'last_name': 'González',
             'role': 'MEDICAL_DIRECTOR',
+            'dni': '25234567',
+            'biological_sex': 'F',
+            'date_of_birth': '1975-03-15',
             'phone': '11-5555-0001',
         }
     )
@@ -61,14 +66,13 @@ def seed_database():
         director.save()
         print('✓ Director Médico creado: director / director123')
     
-    # Create doctors
     doctors = []
     doctor_data = [
-        ('drlopez', 'Carlos', 'López', 'carlos.lopez@fertilidad.com', '11-5555-0002'),
-        ('dramartin', 'Laura', 'Martín', 'laura.martin@fertilidad.com', '11-5555-0003'),
+        ('drlopez', 'Carlos', 'López', 'carlos.lopez@fertilidad.com', '11-5555-0002', '28345678', 'M', '1982-07-20'),
+        ('dramartin', 'Laura', 'Martín', 'laura.martin@fertilidad.com', '11-5555-0003', '30456789', 'F', '1985-11-10'),
     ]
     
-    for username, first_name, last_name, email, phone in doctor_data:
+    for username, first_name, last_name, email, phone, dni, sex, dob in doctor_data:
         doctor, created = User.objects.get_or_create(
             username=username,
             defaults={
@@ -77,6 +81,9 @@ def seed_database():
                 'last_name': last_name,
                 'role': 'DOCTOR',
                 'phone': phone,
+                'dni': dni,
+                'biological_sex': sex,
+                'date_of_birth': dob,
             }
         )
         if created:
@@ -85,14 +92,13 @@ def seed_database():
             print(f'✓ Médico creado: {username} / doctor123')
         doctors.append(doctor)
     
-    # Create lab operators
     operators = []
     operator_data = [
-        ('labop1', 'Ana', 'Rodríguez', 'ana.rodriguez@fertilidad.com', '11-5555-0004'),
-        ('labop2', 'Pedro', 'Fernández', 'pedro.fernandez@fertilidad.com', '11-5555-0005'),
+        ('labop1', 'Ana', 'Rodríguez', 'ana.rodriguez@fertilidad.com', '11-5555-0004', '32567890', 'F', '1988-05-25'),
+        ('labop2', 'Pedro', 'Fernández', 'pedro.fernandez@fertilidad.com', '11-5555-0005', '33678901', 'M', '1990-09-12'),
     ]
     
-    for username, first_name, last_name, email, phone in operator_data:
+    for username, first_name, last_name, email, phone, dni, sex, dob in operator_data:
         operator, created = User.objects.get_or_create(
             username=username,
             defaults={
@@ -101,6 +107,9 @@ def seed_database():
                 'last_name': last_name,
                 'role': 'LAB_OPERATOR',
                 'phone': phone,
+                'dni': dni,
+                'biological_sex': sex,
+                'date_of_birth': dob,
             }
         )
         if created:
@@ -109,7 +118,6 @@ def seed_database():
             print(f'✓ Operador de Lab creado: {username} / labop123')
         operators.append(operator)
     
-    # Create patients
     patient_data = [
         ('paciente1', 'Sofía', 'Ramírez', 'sofia.ramirez@email.com', '11-6666-0001', '35123456', 'F', '1990-05-15'),
         ('paciente2', 'Lucía', 'Torres', 'lucia.torres@email.com', '11-6666-0002', '36234567', 'F', '1988-08-22'),
@@ -126,6 +134,9 @@ def seed_database():
                 'last_name': last_name,
                 'role': 'PATIENT',
                 'phone': phone,
+                'dni': dni,
+                'biological_sex': sex,
+                'date_of_birth': dob,
             }
         )
         if created:
@@ -136,9 +147,6 @@ def seed_database():
         patient, created = Patient.objects.get_or_create(
             user=user,
             defaults={
-                'dni': dni,
-                'biological_sex': sex,
-                'date_of_birth': dob,
                 'occupation': 'Empleada',
                 'medical_coverage': 'OSDE',
                 'member_number': f'OSDE-{dni}',

@@ -37,10 +37,11 @@ def dashboard(request):
         from treatments.models import Treatment
         
         if request.user.is_medical_director():
+            print('Entró director médico')
             patients = Patient.objects.all()[:10]
             treatments = Treatment.objects.all().order_by('-created_at')[:10]
         else:
-            treatments = Treatment.objects.filter(doctor=request.user).order_by('-created_at')[:10]
+            treatments = Treatment.objects.filter(doctor=request.user).order_by('-created_at')
             patient_ids = treatments.values_list('patient_id', flat=True).distinct()
             patients = Patient.objects.filter(id__in=patient_ids)[:10]
         

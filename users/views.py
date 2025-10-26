@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import UserRegistrationForm, StaffUserCreationForm, UserUpdateForm
+from .forms import StaffUserCreationForm, UserUpdateForm
+from .forms import PatientRegistrationForm
 from .models import User
 
 
@@ -39,20 +40,24 @@ def register_view(request):
         return redirect('dashboard')
     
     if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
+        form = PatientRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.role = 'PATIENT'
             user.save()
             
-            # Create patient profile
             from patients.models import Patient
-            Patient.objects.create(user=user)
+            Patient.objects.create(
+                user=user,
+                occupation=form.cleaned_data.get('occupation', ''),
+                medical_coverage=form.cleaned_data.get('medical_coverage', ''),
+                member_number=form.cleaned_data.get('member_number', '')
+            )
             
             messages.success(request, 'Registro exitoso. Por favor, inicie sesión.')
             return redirect('login')
     else:
-        form = UserRegistrationForm()
+        form = PatientRegistrationForm()
     
     return render(request, 'users/register.html', {'form': form})
 

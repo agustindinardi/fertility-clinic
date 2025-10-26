@@ -61,6 +61,36 @@
                     >
                 </div>
 
+                <div class="form-group">
+                    <label for="dni" class="form-label">DNI</label>
+                    <input 
+                        type="text" 
+                        id="dni" 
+                        name="dni" 
+                        class="form-control" 
+                        value="{{ user.dni }}"
+                    >   
+                </div>
+
+                <div class="form-group">
+                    <label for="biological_sex" class="form-label">Sexo Biológico</label>
+                    <select id="biological_sex" name="biological_sex" class="form-control">
+                        <option value="M" {% if user.biological_sex == 'M' %}selected{% endif %}>Masculino</option>
+                        <option value="F" {% if user.biological_sex == 'F' %}selected{% endif %}>Femenino</option>
+                    </select>   
+
+                </div>
+                <div class="form-group">
+                    <label for="date_of_birth" class="form-label">Fecha de Nacimiento</label>
+                    <input  
+                        type="date" 
+                        id="date_of_birth" 
+                        name="date_of_birth" 
+                        class="form-control" 
+                        value="{{ user.date_of_birth|date:'Y-m-d' }}"     
+                    >
+                </div>  
+
                 <div class="d-flex justify-between align-center" style="margin-top: 1.5rem;">
                     <a href="{% url 'dashboard' %}" class="btn btn-outline">Cancelar</a>
                     <button type="submit" class="btn btn-primary">Guardar Cambios</button>

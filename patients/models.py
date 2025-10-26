@@ -7,16 +7,8 @@ class Patient(models.Model):
     Patient model - extends User with medical information
     """
     
-    GENDER_CHOICES = [
-        ('M', 'Masculino'),
-        ('F', 'Femenino'),
-    ]
-    
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='patient_profile')
-    date_of_birth = models.DateField(null=True, blank=True)
-    biological_sex = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True, blank=True)
     occupation = models.CharField(max_length=100, blank=True)
-    dni = models.CharField(max_length=20, unique=True, null=True, blank=True)
     medical_coverage = models.CharField(max_length=100, blank=True, verbose_name='Cobertura Médica')
     member_number = models.CharField(max_length=50, blank=True, verbose_name='Número de Socio')
     

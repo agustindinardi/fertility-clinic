@@ -3,14 +3,11 @@ from .models import Patient, MedicalHistory, Partner
 
 
 class PatientProfileForm(forms.ModelForm):
-    """Form for patients to complete their profile"""
+    """Form for patients to complete their profile - only patient-specific fields"""
     
     class Meta:
         model = Patient
-        fields = ['date_of_birth', 'biological_sex', 'occupation', 'dni', 'medical_coverage', 'member_number']
-        widgets = {
-            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
-        }
+        fields = ['occupation', 'medical_coverage', 'member_number']
 
 
 class MedicalHistoryForm(forms.ModelForm):

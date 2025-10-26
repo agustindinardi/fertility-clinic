@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %}Registro de Paciente - Clínica de Fertilidad{% endblock %}
+{% block title %}Crear Usuario Staff - Clínica de Fertilidad{% endblock %}
 
 {% block content %}
 <div class="auth-container">
     <div class="auth-card">
         <div class="auth-header">
-            <h1 class="auth-title">Registro de Paciente</h1>
-            <p class="auth-subtitle">Complete el formulario para crear su cuenta</p>
+            <h1 class="auth-title">Crear Usuario Staff</h1>
+            <p class="auth-subtitle">Complete el formulario para crear un nuevo usuario del personal</p>
         </div>
 
         <form method="post" data-validate>
@@ -27,7 +27,7 @@
                             id="first_name" 
                             name="first_name" 
                             class="form-control" 
-                            placeholder="{{ form.first_name.field.widget.attrs.placeholder }}"
+                            placeholder="Ingrese el nombre"
                             required
                             value="{{ form.first_name.value|default:'' }}"
                         >
@@ -40,7 +40,7 @@
                             id="last_name" 
                             name="last_name" 
                             class="form-control" 
-                            placeholder="{{ form.last_name.field.widget.attrs.placeholder }}"
+                            placeholder="Ingrese el apellido"
                             required
                             value="{{ form.last_name.value|default:'' }}"
                         >
@@ -55,7 +55,7 @@
                             id="dni" 
                             name="dni" 
                             class="form-control" 
-                            placeholder="{{ form.dni.field.widget.attrs.placeholder }}"
+                            placeholder="Ingrese el DNI"
                             required
                             value="{{ form.dni.value|default:'' }}"
                         >
@@ -91,7 +91,7 @@
                             id="phone" 
                             name="phone" 
                             class="form-control" 
-                            placeholder="{{ form.phone.field.widget.attrs.placeholder }}"
+                            placeholder="Ingrese el teléfono"
                             value="{{ form.phone.value|default:'' }}"
                         >
                     </div>
@@ -105,13 +105,25 @@
                 </h3>
 
                 <div class="form-group">
+                    <label for="role" class="form-label">Rol *</label>
+                    <select id="role" name="role" class="form-control" required>
+                        <option value="">Seleccione un rol...</option>
+                        <option value="ADMIN" {% if form.role.value == 'ADMIN' %}selected{% endif %}>Administrador</option>
+                        <option value="MEDICAL_DIRECTOR" {% if form.role.value == 'MEDICAL_DIRECTOR' %}selected{% endif %}>Director Médico</option>
+                        <option value="DOCTOR" {% if form.role.value == 'DOCTOR' %}selected{% endif %}>Médico</option>
+                        <option value="LAB_OPERATOR" {% if form.role.value == 'LAB_OPERATOR' %}selected{% endif %}>Operador de Laboratorio</option>
+                    </select>
+                    <small class="form-text">Los pacientes se registran por su cuenta</small>
+                </div>
+
+                <div class="form-group">
                     <label for="username" class="form-label">Usuario *</label>
                     <input 
                         type="text" 
                         id="username" 
                         name="username" 
                         class="form-control" 
-                        placeholder="{{ form.username.field.widget.attrs.placeholder }}"
+                        placeholder="Ingrese el nombre de usuario"
                         required
                         value="{{ form.username.value|default:'' }}"
                     >
@@ -125,7 +137,7 @@
                         id="email" 
                         name="email" 
                         class="form-control" 
-                        placeholder="{{ form.email.field.widget.attrs.placeholder }}"
+                        placeholder="Ingrese el email"
                         required
                         value="{{ form.email.value|default:'' }}"
                     >
@@ -139,10 +151,11 @@
                             id="password1" 
                             name="password1" 
                             class="form-control" 
-                            placeholder="{{ form.password1.field.widget.attrs.placeholder }}"
+                            placeholder="Ingrese la contraseña"
                             required
                             minlength="8"
                         >
+                        <small class="form-text">Mínimo 8 caracteres</small>
                     </div>
 
                     <div class="form-group">
@@ -152,54 +165,9 @@
                             id="password2" 
                             name="password2" 
                             class="form-control" 
-                            placeholder="{{ form.password2.field.widget.attrs.placeholder }}"
+                            placeholder="Confirme la contraseña"
                             required
                             minlength="8"
-                        >
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sección de información médica (opcional) -->
-            <div style="margin-bottom: 1.5rem;">
-                <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-primary);">
-                    Información Médica (Opcional)
-                </h3>
-
-                <div class="form-group">
-                    <label for="occupation" class="form-label">Ocupación</label>
-                    <input 
-                        type="text" 
-                        id="occupation" 
-                        name="occupation" 
-                        class="form-control" 
-                        placeholder="{{ form.occupation.field.widget.attrs.placeholder }}"
-                        value="{{ form.occupation.value|default:'' }}"
-                    >
-                </div>
-
-                <div class="grid grid-cols-2" style="gap: 1rem;">
-                    <div class="form-group">
-                        <label for="medical_coverage" class="form-label">Cobertura Médica</label>
-                        <input 
-                            type="text" 
-                            id="medical_coverage" 
-                            name="medical_coverage" 
-                            class="form-control" 
-                            placeholder="{{ form.medical_coverage.field.widget.attrs.placeholder }}"
-                            value="{{ form.medical_coverage.value|default:'' }}"
-                        >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="member_number" class="form-label">Número de Socio</label>
-                        <input 
-                            type="text" 
-                            id="member_number" 
-                            name="member_number" 
-                            class="form-control" 
-                            placeholder="{{ form.member_number.field.widget.attrs.placeholder }}"
-                            value="{{ form.member_number.value|default:'' }}"
                         >
                     </div>
                 </div>
@@ -209,25 +177,21 @@
                 <div class="alert alert-error">
                     {% for field, errors in form.errors.items %}
                         {% for error in errors %}
-                            <div>{{ error }}</div>
+                            <div><strong>{{ field }}:</strong> {{ error }}</div>
                         {% endfor %}
                     {% endfor %}
                 </div>
             {% endif %}
 
-            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
-                Registrarse
-            </button>
-        </form>
-
-        <div style="text-align: center; margin-top: 1.5rem;">
-            <p class="text-muted" style="font-size: 0.875rem;">
-                ¿Ya tiene cuenta? 
-                <a href="{% url 'login' %}" style="color: var(--primary); text-decoration: none; font-weight: 600;">
-                    Iniciar sesión
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                <button type="submit" class="btn btn-primary" style="flex: 1;">
+                    Crear Usuario
+                </button>
+                <a href="{% url 'manage_users' %}" class="btn btn-secondary" style="flex: 1; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                    Cancelar
                 </a>
-            </p>
-        </div>
+            </div>
+        </form>
     </div>
 </div>
 
